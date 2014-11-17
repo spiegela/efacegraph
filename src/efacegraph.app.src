@@ -1,0 +1,18 @@
+{application, efacegraph,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  crypto,
+                  public_key,
+                  asn1,
+                  ssl,
+                  idna,
+                  hackney
+                 ]},
+  {mod, { efacegraph_app, []}},
+  {env, []}
+ ]}.
