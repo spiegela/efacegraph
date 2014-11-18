@@ -12,12 +12,12 @@ get_token(AppID, AppSecret, Redirect, Code) ->
          efacegraph_http:form_encoded_to_plist(Resp).
 
 get_token_info(Token) ->
-  Resp = get_token_info(Token, Token),
-         jiffy:decode(Resp).
+  get_token_info(Token, Token).
 
 get_token_info(InputToken, AccessToken) ->
-  Url = build_debug_url(InputToken, AccessToken),
-        efacegraph_http:send_request(Url).
+  Url  = build_debug_url(InputToken, AccessToken),
+  Resp = efacegraph_http:send_request(Url),
+         jiffy:decode(Resp).
 
 get_object_data(ID, AccessToken) when is_binary(ID) ->
   get_object_data(binary_to_list(ID), AccessToken);
