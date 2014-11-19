@@ -13,21 +13,22 @@ send_request(Url, Headers, Options) when is_binary(Url) ->
     {ok, Status, RespHeaders, Client} ->
       check_http_resp(Status, RespHeaders, Client);
     Other ->
-      error(badarg, Other)
+      io:format("HTTP Execution Error: ~p~n", [Other]),
+      error(badarg)
   end.
 
 check_http_resp(404, _Headers, Client) ->
   {ok, Body} = hackney:body(Client),
   io:format("HTTP 404 Not Found Error: ~s~n", [Body]),
-  error(not_authorized, jiffy:decode(Body));
+  throw({not_authorized, jiffy:decode(Body)});
 check_http_resp(403, _Headers, Client) ->
   {ok, Body} = hackney:body(Client),
   io:format("HTTP 403 Forbidden Error: ~s~n", [Body]),
-  error(forbidden, jiffy:decode(Body));
+  throw({forbidden, jiffy:decode(Body)});
 check_http_resp(Status, _Headers, Client) when Status > 399 ->
   {ok, Body} = hackney:body(Client),
   io:format("HTTP Error: ~s~n", [Body]),
-  error(unknown_error, Body);
+  throw({unknown_error, jiffy:decode(Body)});
 check_http_resp(Status, Headers, _Client) when Status =< 399, Status > 200 ->
   %% hackney redirect throws up on FB CDN URLs.  Create our own redirect here.
   {_, Redirect} = lists:keyfind(<<"Location">>, 1, Headers),
