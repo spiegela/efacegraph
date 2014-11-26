@@ -30,6 +30,10 @@ build_token_url(AppID, AppSecret, Redirect, Code) ->
   lists:concat([?TOKEN_URL, "?client_id=", AppID, "&client_secret=", AppSecret,
                 "&redirect_uri=", Redirect, "&code=", Code]).
 
+build_object_URL(ID, Token) when is_integer(ID) ->
+    build_object_URL(integer_to_list(ID), Token);
+build_object_URL(ID, Token) when is_binary(ID) ->
+    build_object_URL(binary_to_list(ID), Token);
 build_object_URL(ID, Token) ->
   lists:concat([?GRAPH_URL, "/", ID, "?access_token=", Token]).
 
